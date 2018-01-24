@@ -1,5 +1,6 @@
 package iandroid.club.bblogs;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import iandroid.club.bblogs.entity.Article;
 import iandroid.club.bblogs.entity.Blog;
+import iandroid.club.bblogs.entity.Category;
 import iandroid.club.bblogs.util.RxUtils;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -154,12 +156,22 @@ public class CrawlerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //跳转详情
-                    Toast.makeText(itemView.getContext(), "文字id:" + article.getArticleId() + " 文字标题：" + article.getArticleTitle(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(CrawlerActivity.this, WebViewActivity.class);
+                    intent.putExtra("url", blog.getBaseUrl() + article.getDetailUrl());
+                    startActivity(intent);
                 }
             });
         }
     }
 
+    private String getListParentElement() {
+        if (blog.getCategory() == Category.CSDN_BLOG) {
+            return "div.list_item";
+        } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
+            return "li.have-img";
+        }
+        return "";
+    }
 
     private List<Article> jsoupGet() {
         List<Article> list = new ArrayList<>();
@@ -169,23 +181,16 @@ public class CrawlerActivity extends AppCompatActivity {
 //            connection.header("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Mobile Safari/537.36");
             connection.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
             Document doc = connection.get();
-            Elements articleList = doc.select("div.list_item");
+            Elements articleList = doc.select(getListParentElement());
 
             if (articleList != null && articleList.size() > 0) {
-
                 for (Element articleItem : articleList) {
-                    String title = articleItem.select("span.link_title").select("a").text();
-                    String desc = articleItem.select("div.article_description").text();
-                    String date = articleItem.select("div.article_manage").select("span.link_postdate").text();
-                    String readCount = articleItem.select("div.article_manage").select("span.link_view").after("a").text();
-                    String href = articleItem.select("span.link_title").select("a").attr("href");
-                    String articleId = href.replace("/" + blogid + "/article/details/", "");
-                    Article article = new Article();
-                    article.setArticleTitle(title);
-                    article.setArticleDesc(desc);
-                    article.setReadCount(readCount);
-                    article.setCreatedTime(date);
-                    article.setArticleId(articleId);
+                    Article article = null;
+                    if (blog.getCategory() == Category.CSDN_BLOG) {
+                        article = getCsdnBlog(articleItem);
+                    } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
+                        article = getJianshuBlog(articleItem);
+                    }
                     list.add(article);
 
                 }
@@ -196,6 +201,50 @@ public class CrawlerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return list;
+    }
+
+    /**
+     * csdn blog 解析
+     *
+     * @param articleItem
+     * @return
+     */
+    private Article getCsdnBlog(Element articleItem) {
+        String title = articleItem.select("span.link_title").select("a").text();
+        String desc = articleItem.select("div.article_description").text();
+        String date = articleItem.select("div.article_manage").select("span.link_postdate").text();
+        String readCount = articleItem.select("div.article_manage").select("span.link_view").after("a").text();
+        String href = articleItem.select("span.link_title").select("a").attr("href");
+        String articleId = href.replace("/" + blogid + "/article/details/", "");
+        Article article = new Article();
+        article.setArticleTitle(title);
+        article.setArticleDesc(desc);
+        article.setReadCount(readCount);
+        article.setCreatedTime(date);
+        article.setArticleId(articleId);
+        article.setDetailUrl(href);
+        return article;
+    }
+
+    /**
+     * 简书blog解析
+     *
+     * @param articleItem
+     * @return
+     */
+    private Article getJianshuBlog(Element articleItem) {
+        String title = articleItem.select("a.title").text();
+        String desc = articleItem.select("p.abstract").text();
+        String date = articleItem.select("div.info").select("span.link_postdate").text();
+        String readCount = articleItem.select("div.article_manage").select("span.time").text();
+        String href = articleItem.select("a.title").attr("href");
+        Article article = new Article();
+        article.setArticleTitle(title);
+        article.setArticleDesc(desc);
+        article.setReadCount(readCount);
+        article.setCreatedTime(date);
+        article.setDetailUrl(href);
+        return article;
     }
 
 }

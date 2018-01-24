@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Blog> mData = new ArrayList<>();
 
     private final String CSDN_BASE_URL = "http://blog.csdn.net";
+    private final String JIANSHU_BASE_URL = "https://www.jianshu.com";
 
     private RecyclerView.Adapter adapter;
 
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private void initData() {
         mData.clear();
         mData.add(new Blog(Category.CSDN_BLOG, "lmj623565791", CSDN_BASE_URL, "张鸿洋"));
+
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/383970bef0a0", JIANSHU_BASE_URL, "Carson_Ho"));
     }
 
     private void initRecyclerView() {

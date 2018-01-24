@@ -42,4 +42,7 @@ dependencies {
     compile rootProject.ext.dependencies.rxjava
     compile rootProject.ext.dependencies.rxandroid
     compile rootProject.ext.dependencies.rxbinding
+
+    //cachewebview
+    compile 'ren.yale.android:cachewebviewlib:1.3.3'
 }

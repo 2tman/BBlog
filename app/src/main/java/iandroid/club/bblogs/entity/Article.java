@@ -21,6 +21,8 @@ public class Article implements Serializable{
     private String readCount;
     //时间
     private String createdTime;
+    //详情url
+    private String detailUrl;
 
     public String getArticleId() {
         return articleId;
@@ -68,5 +70,13 @@ public class Article implements Serializable{
 
     public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
     }
 }
