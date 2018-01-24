@@ -1,5 +1,5 @@
 # BBlog
-BBlog - 一款技术栈blog 爬虫安卓app
+BBlog - 一款技术栈blog 爬虫安卓app，为了收藏和查看方便而整理
 
 #### 一、引用库：
 
