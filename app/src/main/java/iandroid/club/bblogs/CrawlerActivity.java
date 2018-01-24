@@ -1,6 +1,5 @@
 package iandroid.club.bblogs;
 
-import android.app.ProgressDialog;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -27,18 +26,28 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
-import butterknife.OnClick;
+import butterknife.ButterKnife;
+import iandroid.club.bblogs.entity.Article;
+import iandroid.club.bblogs.entity.Blog;
+import iandroid.club.bblogs.util.RxUtils;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
- * 网络爬虫
+ * @Description: 博客爬取
+ * @Author: 2tman
+ * @Time: 2018/1/24
  */
 public class CrawlerActivity extends AppCompatActivity {
 
-    private String blogid = "lmj623565791";
-    private String baseUrl = "http://blog.csdn.net/";
+    private String blogid = "";
+    private String baseUrl = "";
+    private Blog blog;
 
     private RecyclerView mRecyclerView;
     private List<Article> articleList = new ArrayList<>();
@@ -47,24 +56,52 @@ public class CrawlerActivity extends AppCompatActivity {
     @BindView(R.id.mProgressBar)
     ProgressBar mProgressBar;
 
-    @OnClick(R.id.btn_crawler)
-    public void crawlerClick() {
+    public void crawlerLoad() {
         mProgressBar.setVisibility(View.VISIBLE);
-        new Thread() {
+        RxUtils.createObservable(new Callable<Object>() {
             @Override
-            public void run() {
-                super.run();
-                jsoupGet();
+            public Object call() throws Exception {
+                return jsoupGet();
             }
-        }.start();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber() {
+                    @Override
+                    public void onCompleted() {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        List<Article> article = (List<Article>) o;
+                        articleList.clear();
+                        articleList.addAll(article);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crawler);
+        ButterKnife.bind(this);
+        mProgressBar.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
+
+
+        blog = (Blog) getIntent().getSerializableExtra("blog");
+        baseUrl = blog.getBaseUrl();
+        blogid = blog.getBlogid();
+
         initRecyclerView();
+
+        crawlerLoad();
     }
 
     private void initRecyclerView() {
@@ -124,10 +161,10 @@ public class CrawlerActivity extends AppCompatActivity {
     }
 
 
-    private void jsoupGet() {
-
+    private List<Article> jsoupGet() {
+        List<Article> list = new ArrayList<>();
         try {
-            Connection connection = Jsoup.connect(baseUrl + blogid);
+            Connection connection = Jsoup.connect(baseUrl + "/" + blogid);
             // 修改http包中的header,伪装成浏览器进行抓取
 //            connection.header("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Mobile Safari/537.36");
             connection.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
@@ -135,7 +172,7 @@ public class CrawlerActivity extends AppCompatActivity {
             Elements articleList = doc.select("div.list_item");
 
             if (articleList != null && articleList.size() > 0) {
-                List<Article> list = new ArrayList<>();
+
                 for (Element articleItem : articleList) {
                     String title = articleItem.select("span.link_title").select("a").text();
                     String desc = articleItem.select("div.article_description").text();
@@ -152,43 +189,13 @@ public class CrawlerActivity extends AppCompatActivity {
                     list.add(article);
 
                 }
-                if (list != null && list.size() > 0) {
-                    Message message = new Message();
-                    message.what = 1;
-                    message.obj = list;
-                    handler.sendMessage(message);
-                } else {
-                    handler.sendEmptyMessage(0);
-                }
-            } else {
-                handler.sendEmptyMessage(0);
+
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            handler.sendEmptyMessage(-1);
         }
+        return list;
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            mProgressBar.setVisibility(View.GONE);
-            if (msg.what == 1) {
-                if (msg.obj != null) {
-                    List<Article> article = (List<Article>) msg.obj;
-                    articleList.clear();
-                    articleList.addAll(article);
-                    adapter.notifyDataSetChanged();
-                    String json = getGson(article);
-                    Logger.e(json);
-                }
-            }
-        }
-    };
-
-    private static String getGson(Object obj) {
-        return new Gson().toJson(obj);
-    }
 }

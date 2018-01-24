@@ -1,10 +1,10 @@
-package iandroid.club.bblogs;
+package iandroid.club.bblogs.entity;
 
 import java.io.Serializable;
 
 /**
  * @Description:
- * @Author: 加荣
+ * @Author: 2tman
  * @Time: 2017/11/2
  */
 public class Article implements Serializable{
