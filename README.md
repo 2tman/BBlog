@@ -16,3 +16,9 @@ BBlog - 一款技术栈blog 爬虫安卓app，为了收藏和查看方便而整�
 #### demo截图：
 
 ![](screenshots/Screenshot_1.png)    ![](screenshots/Screenshot_2.png)
+
+#### app下载地址：
+https://www.pgyer.com/bblog
+
+#### 二维码：
+![](screenshots/download.png) 
