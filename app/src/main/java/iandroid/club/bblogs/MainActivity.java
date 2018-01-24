@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +47,18 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.mProgressBar)
     ProgressBar mProgressBar;
 
+    @BindView(R.id.refreshLayout)
+    TwinklingRefreshLayout refreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_recyclerview);
         ButterKnife.bind(this);
         mProgressBar.setVisibility(View.GONE);
+
+        refreshLayout.setEnableRefresh(false);
+        refreshLayout.setEnableLoadmore(false);
 
         initData();
 

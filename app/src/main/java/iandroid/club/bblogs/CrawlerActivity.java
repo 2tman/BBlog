@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.header.bezierlayout.BezierLayout;
 import com.orhanobut.logger.Logger;
 import com.zchu.rxcache.data.CacheResult;
 import com.zchu.rxcache.data.ResultFrom;
@@ -58,15 +61,21 @@ public class CrawlerActivity extends AppCompatActivity {
     private String baseUrl = "";
     private Blog blog;
 
-    private String targetUrl = "";
-
     private RecyclerView mRecyclerView;
     private List<Article> articleList = new ArrayList<>();
     private RecyclerView.Adapter adapter;
 
+    private int pageIndex = 1;
+
+    @BindView(R.id.refreshLayout)
+    TwinklingRefreshLayout refreshLayout;
+
     @BindView(R.id.mProgressBar)
     ProgressBar mProgressBar;
 
+    /**
+     * 爬虫数据
+     */
     public void crawlerLoad() {
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -77,7 +86,7 @@ public class CrawlerActivity extends AppCompatActivity {
             }
         }).subscribeOn(Schedulers.io())
                 .compose(AppContext.getInstance().getRxCache()
-                        .<List<Article>>transformer(MD5Utils.getMD5(targetUrl),
+                        .<List<Article>>transformer(MD5Utils.getMD5(getTargetUrl()),
                                 new TypeToken<List<Article>>() {
                                 }.getType(), CacheStrategy.cacheAndRemote()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -85,17 +94,23 @@ public class CrawlerActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted() {
                         mProgressBar.setVisibility(View.GONE);
+                        refreshLayout.finishRefreshing();
+                        refreshLayout.finishLoadmore();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mProgressBar.setVisibility(View.GONE);
+                        refreshLayout.finishRefreshing();
+                        refreshLayout.finishLoadmore();
                     }
 
                     @Override
                     public void onNext(CacheResult<List<Article>> cacheResult) {
                         if (cacheResult.getData().size() > 0) {
-                            articleList.clear();
+                            if (pageIndex == 1) {
+                                articleList.clear();
+                            }
                             articleList.addAll(cacheResult.getData());
                             adapter.notifyDataSetChanged();
                         }
@@ -105,26 +120,42 @@ public class CrawlerActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crawler);
+        setContentView(R.layout.layout_recyclerview);
         ButterKnife.bind(this);
         mProgressBar.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
-
 
         blog = (Blog) getIntent().getSerializableExtra("blog");
         baseUrl = blog.getBaseUrl();
         blogid = blog.getBlogid();
 
+        addRefrech();
         initRecyclerView();
-
-        targetUrl = baseUrl + "/" + blogid;
 
         crawlerLoad();
     }
 
+    private String getTargetUrl() {
+        if (pageIndex == 1) {
+            return baseUrl + "/" + blogid;
+        }
+        //csdn的分页
+        if (blog.getCategory() == Category.CSDN_BLOG) {
+            return baseUrl + "/" + blogid + "/article/list/" + pageIndex;
+        } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
+            //简书的分页
+            return baseUrl + "/" + blogid + "?page=" + pageIndex;
+        }
+        return "";
+    }
+
+    /**
+     * RecyclerView
+     */
     private void initRecyclerView() {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.drawable_divider));
@@ -149,6 +180,28 @@ public class CrawlerActivity extends AppCompatActivity {
                 return articleList.size();
             }
         });
+    }
+
+    /**
+     * 添加刷新
+     */
+    private void addRefrech() {
+        BezierLayout headerView = new BezierLayout(this);
+        refreshLayout.setHeaderView(headerView);
+        refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
+                pageIndex = 1;
+                crawlerLoad();
+            }
+
+            @Override
+            public void onLoadMore(final TwinklingRefreshLayout refreshLayout) {
+                pageIndex++;
+                crawlerLoad();
+            }
+        });
+
     }
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
@@ -195,7 +248,7 @@ public class CrawlerActivity extends AppCompatActivity {
     private List<Article> jsoupGet() {
         List<Article> list = new ArrayList<>();
         try {
-            Connection connection = Jsoup.connect(targetUrl);
+            Connection connection = Jsoup.connect(getTargetUrl());
             // 修改http包中的header,伪装成浏览器进行抓取
             connection.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
             Document doc = connection.get();
