@@ -13,5 +13,6 @@ BBlog - 一款技术栈blog 爬虫安卓app
 
 5.tkrefreshlayout：https://github.com/lcodecorex/TwinklingRefreshLayout
 
-
+#### demo截图：
+![](screenshots/Screenshot_1516802941.png)
 
