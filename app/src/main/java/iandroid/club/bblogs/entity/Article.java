@@ -1,5 +1,7 @@
 package iandroid.club.bblogs.entity;
 
+import org.jsoup.nodes.Element;
+
 import java.io.Serializable;
 
 /**
@@ -78,5 +80,47 @@ public class Article implements Serializable{
 
     public void setDetailUrl(String detailUrl) {
         this.detailUrl = detailUrl;
+    }
+
+    /**
+     * csdn blog 解析
+     *
+     * @param articleItem
+     * @return
+     */
+    public static Article getCsdnBlog(Element articleItem) {
+        String title = articleItem.select("span.link_title").select("a").text();
+        String desc = articleItem.select("div.article_description").text();
+        String date = articleItem.select("div.article_manage").select("span.link_postdate").text();
+        String readCount = articleItem.select("div.article_manage").select("span.link_view").after("a").text();
+        String href = articleItem.select("span.link_title").select("a").attr("href");
+        Article article = new Article();
+        article.setArticleTitle(title);
+        article.setArticleDesc(desc);
+        article.setReadCount(readCount);
+        article.setCreatedTime(date);
+        article.setDetailUrl(href);
+        return article;
+    }
+
+    /**
+     * 简书blog解析
+     *
+     * @param articleItem
+     * @return
+     */
+    public static Article getJianshuBlog(Element articleItem) {
+        String title = articleItem.select("a.title").text();
+        String desc = articleItem.select("p.abstract").text();
+        String date = articleItem.select("div.info").select("span.link_postdate").text();
+        String readCount = articleItem.select("div.article_manage").select("span.time").text();
+        String href = articleItem.select("a.title").attr("href");
+        Article article = new Article();
+        article.setArticleTitle(title);
+        article.setArticleDesc(desc);
+        article.setReadCount(readCount);
+        article.setCreatedTime(date);
+        article.setDetailUrl(href);
+        return article;
     }
 }
