@@ -16,7 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
+import com.zchu.rxcache.data.CacheResult;
+import com.zchu.rxcache.data.ResultFrom;
+import com.zchu.rxcache.stategy.CacheStrategy;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -35,6 +39,9 @@ import iandroid.club.bblogs.entity.Article;
 import iandroid.club.bblogs.entity.Blog;
 import iandroid.club.bblogs.entity.Category;
 import iandroid.club.bblogs.util.RxUtils;
+import ren.yale.android.cachewebviewlib.WebViewCache;
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -51,6 +58,8 @@ public class CrawlerActivity extends AppCompatActivity {
     private String baseUrl = "";
     private Blog blog;
 
+    private String targetUrl = "";
+
     private RecyclerView mRecyclerView;
     private List<Article> articleList = new ArrayList<>();
     private RecyclerView.Adapter adapter;
@@ -60,14 +69,19 @@ public class CrawlerActivity extends AppCompatActivity {
 
     public void crawlerLoad() {
         mProgressBar.setVisibility(View.VISIBLE);
-        RxUtils.createObservable(new Callable<Object>() {
+
+        RxUtils.createObservable(new Callable<List<Article>>() {
             @Override
-            public Object call() throws Exception {
+            public List<Article> call() throws Exception {
                 return jsoupGet();
             }
         }).subscribeOn(Schedulers.io())
+                .compose(AppContext.getInstance().getRxCache()
+                        .<List<Article>>transformer(MD5Utils.getMD5(targetUrl),
+                                new TypeToken<List<Article>>() {
+                                }.getType(), CacheStrategy.cacheAndRemote()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber() {
+                .subscribe(new Observer<CacheResult<List<Article>>>() {
                     @Override
                     public void onCompleted() {
                         mProgressBar.setVisibility(View.GONE);
@@ -79,13 +93,16 @@ public class CrawlerActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Object o) {
-                        List<Article> article = (List<Article>) o;
-                        articleList.clear();
-                        articleList.addAll(article);
-                        adapter.notifyDataSetChanged();
+                    public void onNext(CacheResult<List<Article>> cacheResult) {
+                        if (cacheResult.getData().size() > 0) {
+                            articleList.clear();
+                            articleList.addAll(cacheResult.getData());
+                            adapter.notifyDataSetChanged();
+                        }
+
                     }
                 });
+
     }
 
     @Override
@@ -102,6 +119,8 @@ public class CrawlerActivity extends AppCompatActivity {
         blogid = blog.getBlogid();
 
         initRecyclerView();
+
+        targetUrl = baseUrl + "/" + blogid;
 
         crawlerLoad();
     }
@@ -176,7 +195,7 @@ public class CrawlerActivity extends AppCompatActivity {
     private List<Article> jsoupGet() {
         List<Article> list = new ArrayList<>();
         try {
-            Connection connection = Jsoup.connect(baseUrl + "/" + blogid);
+            Connection connection = Jsoup.connect(targetUrl);
             // 修改http包中的header,伪装成浏览器进行抓取
             connection.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
             Document doc = connection.get();
@@ -201,7 +220,6 @@ public class CrawlerActivity extends AppCompatActivity {
         }
         return list;
     }
-
 
 
 }
