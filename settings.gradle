@@ -1,1 +1,7 @@
-include ':app'
+include ':app', ':b.base_module',             //主应用
+        ':b.base_lib',      //基础库
+        ':b.model_module',  //模型库
+        ':b.home_module',   //主页模块
+        ':b.code_module',   //代码模块
+        ':b.mine_module',   //我的模块
+        ':b.goodapp_module' //好应用模块

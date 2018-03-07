@@ -8,7 +8,7 @@ package iandroid.club.bblogs.entity;
 public enum Category {
 
     CSDN_BLOG("CSDN博客", 1),
-    JIANSHU_BLOG("CSDN博客", 1);
+    JIANSHU_BLOG("CSDN博客", 2);
 
     private String name;
     private int value;

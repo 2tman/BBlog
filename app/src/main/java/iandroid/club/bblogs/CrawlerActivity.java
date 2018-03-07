@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.annimon.stream.Stream;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
@@ -255,16 +256,27 @@ public class CrawlerActivity extends AppCompatActivity {
             Elements articleList = doc.select(getListParentElement());
 
             if (articleList != null && articleList.size() > 0) {
-                for (Element articleItem : articleList) {
-                    Article article = null;
-                    if (blog.getCategory() == Category.CSDN_BLOG) {
-                        article = Article.getCsdnBlog(articleItem);
-                    } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
-                        article = Article.getJianshuBlog(articleItem);
-                    }
+                Stream.of(articleList)
+                        .map(a -> {
+                            if (blog.getCategory() == Category.CSDN_BLOG) {
+                                return Article.getCsdnBlog(a);
+                            } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
+                                return Article.getJianshuBlog(a);
+                            }
+                            return null;
+                        }).forEach(article -> {
                     list.add(article);
-
-                }
+                });
+//                for (Element articleItem : articleList) {
+//                    Article article = null;
+//                    if (blog.getCategory() == Category.CSDN_BLOG) {
+//                        article = Article.getCsdnBlog(articleItem);
+//                    } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
+//                        article = Article.getJianshuBlog(articleItem);
+//                    }
+//                    list.add(article);
+//
+//                }
 
             }
 
