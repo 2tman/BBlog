@@ -4,7 +4,7 @@ BBlog - 一款技术栈blog 爬虫安卓app，为了收藏和查看方便而整�
 ### 二、基础架构
 基础架构整理，也作为平时项目开发的快速使用
 
-模块分为：主页、代码、应用、我的
+模块分为：主页、、、、
 
 代码结构分为：
 
@@ -15,13 +15,6 @@ b.base_lib：基础库
 b.base_module：基础模块（基类界面、路由管理、网络请求封装、数据库处理封装等）
 
 b.home_module：主页模块
-
-b.code_module：代码模块（开源代码） 
-
-b.goodapp_module：好用好玩的app模块
-
-b.mine_module：我的模块
-
 
 #### 一、引用库：
 
@@ -37,7 +30,12 @@ b.mine_module：我的模块
 
 6.Arouter：（实现模块化开发） https://github.com/alibaba/ARouter 
 
-7.Dagger2：（注解）https://github.com/google/dagger
+7、stream：（Lightweight-Stream，android兼容实现Java8 Stream 功能）https://github.com/aNNiMON/Lightweight-Stream-API
+
+
+
+
+<!-- 7.Dagger2：（注解）https://github.com/google/dagger -->
 #### demo截图：
 
 ![](screenshots/Screenshot_1.png)    ![](screenshots/Screenshot_2.png)

@@ -20,6 +20,11 @@ android {
                 arguments = [ moduleName : project.getName() ]
             }
         }
+
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
     }
 
     //java8
@@ -35,45 +40,28 @@ android {
         }
     }
 
-//    aaptOptions {
-//        cruncherEnabled = false
-//        useNewCruncher = false
-//    }
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //log
-    compile 'com.orhanobut:logger:2.1.1'
-    // jsoup HTML parser library @ https://jsoup.org/
-    compile 'org.jsoup:jsoup:1.10.3'
-    compile 'com.google.code.gson:gson:2.2.4'
     //butterknife
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    //rxjava1.0
-    compile rootProject.ext.dependencies.rxjava
-    compile rootProject.ext.dependencies.rxandroid
-    compile rootProject.ext.dependencies.rxbinding
-    //rxcache
-    compile 'com.zchu:rxcache:1.2.6'
-    //tkrefreshlayout
-    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
-    //cachewebview
-    compile 'ren.yale.android:cachewebviewlib:1.3.3'
+
+    //bugly
+    compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
+
     //dagger2
-    compile 'com.google.dagger:dagger:2.10'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
-    //支持java 8 stream
-    compile 'com.annimon:stream:1.1.9'
+//    compile 'com.google.dagger:dagger:2.10'
+//    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 
-
-    //通用模块
-    implementation project(':b.home_module')
-    //开源代码模块
-    implementation project(':b.code_module')
-    //好应用app模块
-    implementation project(':b.goodapp_module')
-    //我的模块
-    implementation project(':b.mine_module')
+    //home模块不是作为app运行的时候引入
+    if (!rootProject.ext.modules.isHomeApplication) {
+        compile project(':b.home_module')
+    }
 }

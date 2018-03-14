@@ -9,7 +9,7 @@
         android:id="@+id/tv_blog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/theme_color_primary"
         android:textSize="16sp"
         tools:text="title"
         android:layout_centerVertical="true"/>

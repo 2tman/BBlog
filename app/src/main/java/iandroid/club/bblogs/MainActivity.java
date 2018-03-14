@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
     private void initData() {
         mData.clear();
         mData.add(new Blog(Category.CSDN_BLOG, "lmj623565791", CSDN_BASE_URL, "张鸿洋"));
-
         mData.add(new Blog(Category.JIANSHU_BLOG,"u/383970bef0a0", JIANSHU_BASE_URL, "Carson_Ho"));
     }
 

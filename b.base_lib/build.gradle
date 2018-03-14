@@ -22,6 +22,20 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    compile rootProject.ext.dependencies.supportv4
     compile rootProject.ext.dependencies.supportv7
+    compile rootProject.ext.dependencies.supportdesign
+    //rxjava
+    compile rootProject.ext.dependencies.rxjava
+    compile rootProject.ext.dependencies.rxandroid
+    compile rootProject.ext.dependencies.rxbinding
+    //rxcache
+    compile rootProject.ext.dependencies.rxcache
+    //json 谷歌解析库
+    compile rootProject.ext.dependencies.gson
+
+//    //guava
+//    compile 'com.google.guava:guava:24.0-jre'
+//    // or, for Android:
+//    compile 'com.google.guava:guava:24.0-android'
 }

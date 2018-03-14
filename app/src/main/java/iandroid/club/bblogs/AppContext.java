@@ -3,6 +3,9 @@ package iandroid.club.bblogs;
 import android.app.Application;
 import android.content.Context;
 
+import com.iandroid.bbase_module.application.BaseModuleAppContext;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zchu.rxcache.RxCache;
 import com.zchu.rxcache.diskconverter.SerializableDiskConverter;
 
@@ -13,7 +16,7 @@ import java.io.File;
  * @Author: 2tman
  * @Time: 2018/1/24
  */
-public class AppContext extends Application {
+public class AppContext extends BaseModuleAppContext {
 
     private static AppContext instance;
 
@@ -33,6 +36,9 @@ public class AppContext extends Application {
         instance = this;
 
         initRxCache();
+
+        Bugly.init(getApplicationContext(), "e05f160fe2", false);
+
     }
 
     /**
