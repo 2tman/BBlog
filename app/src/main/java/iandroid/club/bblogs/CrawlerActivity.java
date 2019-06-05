@@ -39,6 +39,7 @@ import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import iandroid.club.bbase_lib.activity.BaseActivity;
 import iandroid.club.bblogs.entity.Article;
 import iandroid.club.bblogs.entity.Blog;
 import iandroid.club.bblogs.entity.Category;
@@ -56,7 +57,7 @@ import rx.schedulers.Schedulers;
  * @Author: 2tman
  * @Time: 2018/1/24
  */
-public class CrawlerActivity extends AppCompatActivity {
+public class CrawlerActivity extends BaseActivity {
 
     private String blogid = "";
     private String baseUrl = "";
@@ -237,13 +238,17 @@ public class CrawlerActivity extends AppCompatActivity {
         }
     }
 
-    private String getListParentElement() {
+    private Elements getListParentElement(Document doc) {
+        Elements elements = null;
         if (blog.getCategory() == Category.CSDN_BLOG) {
-            return "div.list_item";
+            elements = doc.select("div.list_item");
         } else if (blog.getCategory() == Category.JIANSHU_BLOG) {
-            return "li.have-img";
+            elements = doc.select("li.have-img");
+            if(elements == null || elements.size()==0){
+                elements = doc.select("div.content");
+            }
         }
-        return "";
+        return elements;
     }
 
     private List<Article> jsoupGet() {
@@ -253,7 +258,7 @@ public class CrawlerActivity extends AppCompatActivity {
             // 修改http包中的header,伪装成浏览器进行抓取
             connection.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
             Document doc = connection.get();
-            Elements articleList = doc.select(getListParentElement());
+            Elements articleList = getListParentElement(doc);
 
             if (articleList != null && articleList.size() > 0) {
                 Stream.of(articleList)

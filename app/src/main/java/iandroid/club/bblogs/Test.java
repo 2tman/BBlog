@@ -21,6 +21,9 @@ import java.util.Map;
 
 public class Test {
 
+    public Test() {
+    }
+
     public void doTest(){
         //1.Map
 //        Map<String, List<String>> stringListMap = new HashMap<String, List<String>>();

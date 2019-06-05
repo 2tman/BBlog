@@ -1,11 +1,21 @@
 package iandroid.club.bblogs;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import iandroid.club.bbase_lib.activity.BaseActivity;
 import iandroid.club.bblogs.entity.Article;
 import iandroid.club.bblogs.entity.Blog;
 import iandroid.club.bblogs.entity.Category;
@@ -29,7 +41,7 @@ import iandroid.club.bblogs.entity.Category;
  * @Author: 2tman
  * @Time: 2018/1/24
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     /**
      * 博客列表集合
@@ -72,8 +84,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initData() {
         mData.clear();
+
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/4f2c483c12d8", JIANSHU_BASE_URL, "沈哲");
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/5d38c81be78e", JIANSHU_BASE_URL, "刘望舒"));
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/4ef984470da8", JIANSHU_BASE_URL, "《Android高级进阶》作者"));
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/cd0fe10b01d2", JIANSHU_BASE_URL, "CangWang"));
         mData.add(new Blog(Category.CSDN_BLOG, "lmj623565791", CSDN_BASE_URL, "张鸿洋"));
         mData.add(new Blog(Category.JIANSHU_BLOG,"u/383970bef0a0", JIANSHU_BASE_URL, "Carson_Ho"));
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/3ed7c63149f2", JIANSHU_BASE_URL, "骆驼骑士"));
     }
 
     private void initRecyclerView() {

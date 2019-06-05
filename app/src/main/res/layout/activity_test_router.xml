@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical"
-    android:gravity="center">
-    <TextView
+    tools:context=".TestRouterActivity"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/btn_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="home"
-        android:textColor="@color/Blue"
-        android:gravity="center"/>
+        android:text="home"/>
+    <Button
+        android:id="@+id/btn_mine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="mine"/>
 </LinearLayout>

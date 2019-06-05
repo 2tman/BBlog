@@ -1,8 +1,4 @@
-if (rootProject.ext.modules.isHomeApplication) {
-    apply plugin: 'com.android.application'
-} else {
-    apply plugin: 'com.android.library'
-}
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -13,9 +9,7 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        if (rootProject.ext.modules.isHomeApplication) {
-            applicationId "club.iandroid.bhome"
-        }
+
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -23,29 +17,20 @@ android {
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     compile project(':b.base_module')
-    //annotationProcessor 是apt注解框架的声明，
-    //会使用javaCompileOptions这个配置来获取当前的module的名字
-
-    //在各个模块中的build.gradle的defaultConfig属性中加入：
-    //javaCompileOptions {
-    //annotationProcessorOptions {
-    //arguments = [ moduleName : project.getName() ]
-    //}
-    // }
-    //每个模块的dependencies属性需要Arouter apt的引用，不然无法在apt中生成索引文件，无法跳转成功
 
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
-
 }

@@ -1,4 +1,4 @@
-include ':app', ':b.base_module',             //主应用
+include ':app', ':b.base_module', ':b.mine_module',             //主应用
         ':b.base_lib',      //基础库
         ':b.model_module',  //模型库
         ':b.home_module'   //主页模块
