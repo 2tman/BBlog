@@ -38,8 +38,13 @@ b.home_module：主页模块
 <!-- 7.Dagger2：（注解）https://github.com/google/dagger -->
 #### demo截图：
 
-![](screenshots/Screenshot_2019-06-13-23-33-52.png)    ![](screenshots/Screenshot_2019-06-14-00-34-30.png)
-![](screenshots/Screenshot_2019-06-14-00-34-41.png)    ![](screenshots/Screenshot_2019-06-14-00-35-06.png)
+<img width="150" height="250" src="screenshots/Screenshot_2019-06-13-23-33-52.png"/>
+<img width="150" height="250" src="screenshots/Screenshot_2019-06-14-00-34-30.png"/>
+<img width="150" height="250" src="screenshots/Screenshot_2019-06-14-00-34-41.png"/>
+<img width="150" height="250" src="screenshots/Screenshot_2019-06-14-00-35-06.png"/>
+
+<!-- ![](screenshots/Screenshot_2019-06-13-23-33-52.png)    ![](screenshots/Screenshot_2019-06-14-00-34-30.png)
+![](screenshots/Screenshot_2019-06-14-00-34-41.png)    ![](screenshots/Screenshot_2019-06-14-00-35-06.png) -->
 
 #### app下载地址：
 https://www.pgyer.com/bblog
