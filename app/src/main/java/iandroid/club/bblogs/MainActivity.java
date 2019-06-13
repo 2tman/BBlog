@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity {
     private void initData() {
         mData.clear();
 
-        mData.add(new Blog(Category.JIANSHU_BLOG,"u/4f2c483c12d8", JIANSHU_BASE_URL, "沈哲");
+        mData.add(new Blog(Category.JIANSHU_BLOG,"u/4f2c483c12d8", JIANSHU_BASE_URL, "沈哲"));
         mData.add(new Blog(Category.JIANSHU_BLOG,"u/5d38c81be78e", JIANSHU_BASE_URL, "刘望舒"));
         mData.add(new Blog(Category.JIANSHU_BLOG,"u/4ef984470da8", JIANSHU_BASE_URL, "《Android高级进阶》作者"));
         mData.add(new Blog(Category.JIANSHU_BLOG,"u/cd0fe10b01d2", JIANSHU_BASE_URL, "CangWang"));

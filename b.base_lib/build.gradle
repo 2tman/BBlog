@@ -41,6 +41,7 @@ dependencies {
     compile 'com.gyf.barlibrary:barlibrary:2.3.0'
     //toolbar
     compile 'com.github.badoualy:morphy-toolbar:1.0.4'
+    compile rootProject.ext.dependencies.okhttp
 //    //guava
 //    compile 'com.google.guava:guava:24.0-jre'
 //    // or, for Android:

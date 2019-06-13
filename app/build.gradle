@@ -72,6 +72,6 @@ dependencies {
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
 
     //反射框架
-    compile 'org.jooq:joor:0.9.7'
+//    compile 'org.jooq:joor:0.9.7'
 
 }

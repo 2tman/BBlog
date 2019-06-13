@@ -16,9 +16,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 
-import org.joor.Reflect.*;
-
-import static org.joor.Reflect.on;
+//import org.joor.Reflect.*;
+//
+//import static org.joor.Reflect.on;
 
 public class TestRouterActivity extends AppCompatActivity {
 
@@ -212,18 +212,18 @@ public class TestRouterActivity extends AppCompatActivity {
     }
 
     public void testjOOR() {
-        Test test = on("iandroid.club.bblogs.Test")//类似Class.forName()
-                .create("Test")//调用类中的构造方法
-                .call("doTest")//调用类中的方法
-                .call("doTest2")//再次调用类中的方法
-                .get();//获取包装好的对象
-
-        /**
-         * 并且支持动态代理
-         */
-        RealSubject test1 = on("iandroid.club.bblogs.Test")
-                .create("Test")
-                .as(RealSubject.class);
-        test1.doSomething();
+//        Test test = on("iandroid.club.bblogs.Test")//类似Class.forName()
+//                .create("Test")//调用类中的构造方法
+//                .call("doTest")//调用类中的方法
+//                .call("doTest2")//再次调用类中的方法
+//                .get();//获取包装好的对象
+//
+//        /**
+//         * 并且支持动态代理
+//         */
+//        RealSubject test1 = on("iandroid.club.bblogs.Test")
+//                .create("Test")
+//                .as(RealSubject.class);
+//        test1.doSomething();
     }
 }
