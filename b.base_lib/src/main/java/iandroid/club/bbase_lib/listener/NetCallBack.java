@@ -6,5 +6,6 @@ package iandroid.club.bbase_lib.listener;
  * @CreatedDesc:
  * @Version: 1.0
  */
-public class NetCallBack {
+public interface NetCallBack {
+    void onSuccess(String json);
 }
