@@ -105,7 +105,7 @@ public class MainActivity extends BaseActivity {
      * 初始化数据
      */
     private void initData() {
-        mData.clear();
+
 
 //        mData.add(new Blog(Category.JIANSHU_BLOG,"u/4f2c483c12d8", JIANSHU_BASE_URL, "沈哲"));
 //        mData.add(new Blog(Category.JIANSHU_BLOG,"u/5d38c81be78e", JIANSHU_BASE_URL, "刘望舒"));
@@ -120,18 +120,19 @@ public class MainActivity extends BaseActivity {
             public List<Blog> call() throws Exception {
                 return parseData(NetUtil.syncGet(DATA_URL));
             }
-        }).onErrorResumeNext(new Func1<Throwable, Observable<? extends List<Blog>>>() {
-            @Override
-            public Observable<? extends List<Blog>> call(Throwable throwable) {
-                return Observable.just(null);
-            }
         })
                 .subscribeOn(Schedulers.io())
                 .compose(AppContext.getInstance().getRxCache()
                         .<List<Blog>>transformer(MD5Utils.getMD5(DATA_URL),
                                 new TypeToken<List<Blog>>() {
-                                }.getType(), CacheStrategy.cacheAndRemote()))
+                                }.getType(), CacheStrategy.firstCache()))
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(new Func1<Throwable, Observable<CacheResult<List<Blog>>>>() {
+                    @Override
+                    public Observable<CacheResult<List<Blog>>> call(Throwable throwable) {
+                        return Observable.just(null);
+                    }
+                })
                 .subscribe(new Observer<CacheResult<List<Blog>>>() {
                     @Override
                     public void onCompleted() {
@@ -150,6 +151,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onNext(CacheResult<List<Blog>> cacheResult) {
                         if (cacheResult.getData().size() > 0) {
+                            mData.clear();
                             mData.addAll(cacheResult.getData());
                             adapter.notifyDataSetChanged();
                         }

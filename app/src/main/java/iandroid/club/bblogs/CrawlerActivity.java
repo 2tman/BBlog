@@ -90,7 +90,7 @@ public class CrawlerActivity extends BaseActivity {
                 .compose(AppContext.getInstance().getRxCache()
                         .<List<Article>>transformer(MD5Utils.getMD5(getTargetUrl()),
                                 new TypeToken<List<Article>>() {
-                                }.getType(), CacheStrategy.cacheAndRemote()))
+                                }.getType(), CacheStrategy.firstCache()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CacheResult<List<Article>>>() {
                     @Override

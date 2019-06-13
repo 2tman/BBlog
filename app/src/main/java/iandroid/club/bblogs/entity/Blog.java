@@ -12,6 +12,8 @@ public class Blog implements Serializable{
     //博客类型
     private Category category;
 
+    private int categoryType;
+
     //博客id
     private String blogid;
 
@@ -29,6 +31,13 @@ public class Blog implements Serializable{
     }
 
     public Category getCategory() {
+        if(category==null){
+            if(categoryType == Category.CSDN_BLOG.getValue()){
+                category = Category.CSDN_BLOG;
+            }else {
+                category = Category.JIANSHU_BLOG;
+            }
+        }
         return category;
     }
 
