@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('apk') {
       steps {
-        withGradle()
+        sh 'gradle assembleDebug'
       }
     }
 
